@@ -1,7 +1,20 @@
 import React from "react";
 import DayPicker, { DateUtils } from "react-day-picker";
 
-import "react-day-picker/lib/style.css";
+import defaultStyle from "react-day-picker/lib/defaultStyle";
+
+const selectedDayStyle = {
+  color: '#FFF',
+  backgroundColor: '#4A90E2',
+};
+
+const style = {
+  ...defaultStyle,
+  day: {
+    ...defaultStyle.day,
+    '&selected': selectedDayStyle
+  },
+};
 
 export default class SelectableDay extends React.Component {
 
@@ -22,10 +35,10 @@ export default class SelectableDay extends React.Component {
       <div>
         <DayPicker
           modifiers={{
-            selected: day => DateUtils.isSameDay(selectedDay, day)
+            selected: (day, {isToday, isOutside}) => !isOutside && DateUtils.isSameDay(selectedDay, day)
           }}
           onDayClick={ this.handleDayClick.bind(this) }
-          className="daypicker"
+          style={style} className="as"
         />
         <p>
           Selected: { selectedDay && selectedDay.toLocaleDateString() }

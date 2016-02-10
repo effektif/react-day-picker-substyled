@@ -3,6 +3,7 @@ import substyle from 'substyle';
 import * as Helpers from "./Helpers";
 import * as DateUtils from "./DateUtils";
 import * as LocaleUtils from "./LocaleUtils";
+import defaultStyle from './defaultStyle';
 
 const keys = {
   LEFT: 37,
@@ -36,7 +37,7 @@ class Day extends Component {
       'today': isToday,
       'outside': isOutside,
 
-      ...Helpers.mapObject(modifiers, checkFn => checkFn(day))
+      ...Helpers.mapObject(modifiers, checkFn => checkFn(day, { isToday, isOutside }))
     }
 
     const substyleProps = substyle(rest, {
@@ -130,6 +131,7 @@ export default class DayPicker extends Component {
     canChangeMonth: true,
     renderDay: day => day.getDate(),
     captionElement: <Caption />,
+    style: defaultStyle,
 
     onDayClick: emptyFunc,
     onDayTouchTap: emptyFunc,
