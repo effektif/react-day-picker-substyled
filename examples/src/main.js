@@ -6,6 +6,6 @@ import Examples from "./Examples";
 import "./styles/main.css";
 
 // enable touch-tap events
-reactTapEvent();
+// reactTapEvent();
 
 ReactDOM.render(<Examples />, document.getElementById("root"));
