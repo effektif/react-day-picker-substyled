@@ -81,6 +81,6 @@
     "webpack": "^1.12.4"
   },
   "dependencies": {
-    "substyle": "^1.0.2"
+    "substyle": "^1.1.0"
   }
 }

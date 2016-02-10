@@ -57,7 +57,7 @@ const Day = ({
 
   const modifierKeys = Helpers.filterKeys(modifierObj, (key, val) => val);
   const handlers = Helpers.mapObject({ onKeyDown, onMouseEnter, onMouseLeave, onTouchTap, onClick },
-    handler => (e) => handler(e, day, )
+    handler => (e) => handler(e, day, modifierKeys)
   );
 
   return (
