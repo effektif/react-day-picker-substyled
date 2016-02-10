@@ -25,6 +25,7 @@ export default class SelectableDay extends React.Component {
             selected: day => DateUtils.isSameDay(selectedDay, day)
           }}
           onDayClick={ this.handleDayClick.bind(this) }
+          className="daypicker"
         />
         <p>
           Selected: { selectedDay && selectedDay.toLocaleDateString() }

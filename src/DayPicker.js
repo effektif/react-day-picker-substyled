@@ -17,58 +17,70 @@ const Caption = ({ date, locale, localeUtils, ...rest }) => (
   </div>
 );
 
-const Day = ({ 
-  day, month, children,
-  enableOutsideDays, modifiers, tabIndex,
-  onKeyDown, onMouseEnter, onMouseLeave, onTouchTap, onClick,
-  ...rest 
-}) => {
-  const key = `${day.getFullYear()}${day.getMonth()}${day.getDate()}`;
+class Day extends Component {
 
-  const isToday = DateUtils.isSameDay(day, new Date());
-  const isOutside = day.getMonth() !== month.getMonth();
+  render() {
+    const { 
+      day, month, children,
+      enableOutsideDays, modifiers,
+      onKeyDown, onMouseEnter, onMouseLeave, onTouchTap, onClick, onFocus, onBlur,
+      ...rest 
+    } = this.props;
 
-  const modifierObj = {
-    'today': isToday,
-    'outside': isOutside,
+    const key = `${day.getFullYear()}${day.getMonth()}${day.getDate()}`;
 
-    ...Helpers.mapObject(modifiers, checkFn => checkFn(day))
-  }
+    const isToday = DateUtils.isSameDay(day, new Date());
+    const isOutside = day.getMonth() !== month.getMonth();
 
-  const substyleProps = substyle(rest, {
-    '&today': isToday,
-    '&outside': isOutside,
+    const modifierObj = {
+      'today': isToday,
+      'outside': isOutside,
 
-    ...Helpers.mapObject(modifierObj, undefined, modifierKey => '&' + modifierKey)
-  })
-
-  if (isOutside && !enableOutsideDays) {
-    return <div key={ `outside-${key}` } {...substyleProps} />;
-  }
-
-  if ((onTouchTap || onClick) && !isOutside) {
-    // Focus on the first day of the month
-    if (day.getDate() !== 1) {
-      tabIndex = -1;
+      ...Helpers.mapObject(modifiers, checkFn => checkFn(day))
     }
-  } else {
-    tabIndex = null;
+
+    const substyleProps = substyle(rest, {
+      '&today': isToday,
+      '&outside': isOutside,
+
+      ...Helpers.mapObject(modifierObj, undefined, modifierKey => '&' + modifierKey)
+    })
+
+    if (isOutside && !enableOutsideDays) {
+      return <div key={ `outside-${key}` } {...substyleProps} />;
+    }
+
+    let tabIndex = this.props.tabIndex
+    if ((onTouchTap || onClick) && !isOutside) {
+      // Focus on the first day of the month
+      if (day.getDate() !== 1) {
+        tabIndex = -1;
+      }
+    } else {
+      tabIndex = null;
+    }
+
+    const modifierKeys = Helpers.filterKeys(modifierObj, (key, val) => val);
+    const handlers = Helpers.mapObject({ onKeyDown, onMouseEnter, onMouseLeave, onTouchTap, onClick, onFocus, onBlur },
+      handler => (e) => handler(e, day, modifierKeys)
+    );
+
+    return (
+      <div key={key}
+        ref="el"
+        {...substyleProps}
+        tabIndex={ tabIndex }
+        role="gridcell"
+        {...handlers}
+        >
+        { children }
+      </div>
+    );
   }
 
-  const modifierKeys = Helpers.filterKeys(modifierObj, (key, val) => val);
-  const handlers = Helpers.mapObject({ onKeyDown, onMouseEnter, onMouseLeave, onTouchTap, onClick },
-    handler => (e) => handler(e, day, modifierKeys)
-  );
-
-  return (
-    <div key={ key } {...substyleProps}
-      tabIndex={ tabIndex }
-      role="gridcell"
-      {...handlers}
-      >
-      { children }
-    </div>
-  );
+  focus() {
+    this.refs.el.focus()
+  }
 }
 
 const emptyFunc = () => {}
@@ -130,7 +142,8 @@ export default class DayPicker extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentMonth: Helpers.startOfMonth(props.initialMonth)
+      currentMonth: Helpers.startOfMonth(props.initialMonth),
+      focusedDay: null
     };
   }
 
@@ -214,56 +227,41 @@ export default class DayPicker extends Component {
     });
   }
 
-  focusPreviousDay(dayNode) {
-    const body = dayNode.parentNode.parentNode.parentNode.parentNode;
-    let dayNodes = body.querySelectorAll(".DayPicker-Day:not(.DayPicker-Day--outside)");
-    let nodeIndex;
-    for (let i = 0; i < dayNodes.length; i++) {
-      if (dayNodes[i] === dayNode) {
-        nodeIndex = i;
-        break;
-      }
+  focusPreviousDay() {
+    if(!this.state.focusedDay) {
+      return;
     }
-    if (nodeIndex === 0) {
+
+    const setFocus = () => this.refs.beforeFocused.focus()
+
+    if(this.refs.beforeFocused) {
+      setFocus()
+    } else {
       const { currentMonth } = this.state;
       const { numberOfMonths } = this.props;
-      const prevMonth = DateUtils.addMonths(currentMonth, -numberOfMonths);
+      const previousMonth = DateUtils.addMonths(currentMonth, -numberOfMonths);
       this.setState({
-        currentMonth: prevMonth
-      }, () => {
-        dayNodes = body.querySelectorAll(".DayPicker-Day:not(.DayPicker-Day--outside)");
-        dayNodes[dayNodes.length - 1].focus();
-      });
-    }
-    else {
-      dayNodes[nodeIndex - 1].focus();
+        currentMonth: previousMonth
+      }, setFocus);
     }
   }
 
-  focusNextDay(dayNode) {
-    const body = dayNode.parentNode.parentNode.parentNode.parentNode;
-    let dayNodes = body.querySelectorAll(".DayPicker-Day:not(.DayPicker-Day--outside)");
-    let nodeIndex;
-    for (let i = 0; i < dayNodes.length; i++) {
-      if (dayNodes[i] === dayNode) {
-        nodeIndex = i;
-        break;
-      }
+  focusNextDay() {
+    if(!this.state.focusedDay) {
+      return;
     }
 
-    if (nodeIndex === dayNodes.length - 1) {
+    const setFocus = () => this.refs.afterFocused.focus()
+
+    if(this.refs.afterFocused) {
+      setFocus()
+    } else {
       const { currentMonth } = this.state;
       const { numberOfMonths } = this.props;
       const nextMonth = DateUtils.addMonths(currentMonth, numberOfMonths);
       this.setState({
         currentMonth: nextMonth
-      }, () => {
-        dayNodes = body.querySelectorAll(".DayPicker-Day:not(.DayPicker-Day--outside)");
-        dayNodes[0].focus();
-      });
-    }
-    else {
-      dayNodes[nodeIndex + 1].focus();
+      }, setFocus);
     }
   }
 
@@ -337,6 +335,7 @@ export default class DayPicker extends Component {
 
     this.props.onDayClick(e, day, modifiers);
   }
+
   handleOutsideDayPress(day) {
     const { currentMonth } = this.state;
     const { numberOfMonths } = this.props;
@@ -347,6 +346,18 @@ export default class DayPicker extends Component {
     else if (diffInMonths < 0) {
       this.showPreviousMonth();
     }
+  }
+
+  handleDayFocus(e, day, modifiers) {
+    this.setState({
+      focusedDay: day
+    })
+  }
+
+  handleDayBlur(e, day, modifiers) {
+    this.setState({
+      focusedDay: null
+    })
   }
 
   renderNavBar() {
@@ -431,6 +442,22 @@ export default class DayPicker extends Component {
   }
 
   renderDay(month, day) {
+    var ref;
+    if(this.state.focusedDay) {
+      const isOutside = day.getMonth() !== month.getMonth();
+      if(!isOutside) {
+        const dayBefore = new Date(this.state.focusedDay.getTime())
+        dayBefore.setDate(dayBefore.getDate() - 1);
+        const dayAfter = new Date(this.state.focusedDay.getTime())
+        dayAfter.setDate(dayAfter.getDate() + 1);
+        if(DateUtils.isSameDay(dayBefore, day)) {
+          ref = "beforeFocused"
+        } else if(DateUtils.isSameDay(dayAfter, day)) {
+          ref = "afterFocused"
+        }
+      }
+    }
+
     const props = {
       ...substyle(this.props, 'day'),
 
@@ -443,11 +470,14 @@ export default class DayPicker extends Component {
       onMouseLeave: this.props.onDayMouseEnter, 
       onTouchTap: this.handleDayTouchTap.bind(this), 
       onClick: this.handleDayClick.bind(this),
+      onFocus: this.handleDayFocus.bind(this),
+      onBlur: this.handleDayBlur.bind(this),
 
       month, 
       day
     }
-    return <Day {...props}>{ this.props.renderDay(day) }</Day>
+
+    return <Day {...props} ref={ref}>{ this.props.renderDay(day) }</Day>
   }
 
   render() {
