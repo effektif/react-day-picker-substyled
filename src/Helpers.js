@@ -64,17 +64,22 @@ export function getWeekArray(d, firstDayOfWeek=getFirstDayOfWeek()) {
 
 }
 
-export function getModifiersForDay(d, modifierFunctions) {
-  const modifiers = [];
-  if (modifierFunctions) {
-    for (const modifier in modifierFunctions) {
-      const func = modifierFunctions[modifier];
-      if (func(d)) {
-        modifiers.push(modifier);
-      }
-    }
+export function mapObject(obj, mapValue=(value, key)=>value, mapKey=(key, value)=>key) {
+  const result = {}
+  for (const key in obj) {
+    let value = obj[key]
+    result[ mapKey(key, value) ] = mapValue(value, key)
   }
-  return modifiers;
+  return result
+}
+
+export function filterKeys(obj, filterFn) {
+  const result = []
+  for (const key in obj) {
+    if(filterFn(key, obj[key])) 
+      result.push(key)
+  }
+  return result
 }
 
 export function getMonthsDiff(d1, d2) {

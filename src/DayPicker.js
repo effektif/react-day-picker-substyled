@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from "react";
+import substyle from 'substyle';
 import * as Helpers from "./Helpers";
 import * as DateUtils from "./DateUtils";
 import * as LocaleUtils from "./LocaleUtils";
@@ -10,17 +11,67 @@ const keys = {
   SPACE: 32
 };
 
-class Caption extends Component {
+const Caption = ({ date, locale, localeUtils, ...rest }) => (
+  <div {...rest} {...substyle(rest)}>
+    { localeUtils.formatMonthTitle(date, locale) }
+  </div>
+);
 
-  render() {
-    const { date, locale, localeUtils, onClick } = this.props;
-    return (
-      <div className="DayPicker-Caption" onClick={ onClick }>
-        { localeUtils.formatMonthTitle(date, locale) }
-      </div>
-    );
+const Day = ({ 
+  day, month, children,
+  enableOutsideDays, modifiers, tabIndex,
+  onKeyDown, onMouseEnter, onMouseLeave, onTouchTap, onClick,
+  ...rest 
+}) => {
+  const key = `${day.getFullYear()}${day.getMonth()}${day.getDate()}`;
+
+  const isToday = DateUtils.isSameDay(day, new Date());
+  const isOutside = day.getMonth() !== month.getMonth();
+
+  const modifierObj = {
+    'today': isToday,
+    'outside': isOutside,
+
+    ...Helpers.mapObject(modifiers, checkFn => checkFn(day))
   }
+
+  const substyleProps = substyle(rest, {
+    '&today': isToday,
+    '&outside': isOutside,
+
+    ...Helpers.mapObject(modifierObj, undefined, modifierKey => '&' + modifierKey)
+  })
+
+  if (isOutside && !enableOutsideDays) {
+    return <div key={ `outside-${key}` } {...substyleProps} />;
+  }
+
+  if ((onTouchTap || onClick) && !isOutside) {
+    // Focus on the first day of the month
+    if (day.getDate() !== 1) {
+      tabIndex = -1;
+    }
+  } else {
+    tabIndex = null;
+  }
+
+  const modifierKeys = Helpers.filterKeys(modifierObj, (key, val) => val);
+  const handlers = Helpers.mapObject({ onKeyDown, onMouseEnter, onMouseLeave, onTouchTap, onClick },
+    handler => (e) => handler(e, day, )
+  );
+
+  return (
+    <div key={ key } {...substyleProps}
+      tabIndex={ tabIndex }
+      role="gridcell"
+      {...handlers}
+      >
+      { children }
+    </div>
+  );
 }
+
+const emptyFunc = () => {}
 
 export default class DayPicker extends Component {
 
@@ -66,7 +117,14 @@ export default class DayPicker extends Component {
     enableOutsideDays: false,
     canChangeMonth: true,
     renderDay: day => day.getDate(),
-    captionElement: <Caption />
+    captionElement: <Caption />,
+
+    onDayClick: emptyFunc,
+    onDayTouchTap: emptyFunc,
+    onDayMouseEnter: emptyFunc,
+    onDayMouseLeave: emptyFunc,
+    onMonthChange: emptyFunc,
+    onCaptionClick: emptyFunc,
   };
 
   constructor(props) {
@@ -313,24 +371,23 @@ export default class DayPicker extends Component {
   }
 
   renderNavBar() {
-    const baseClass = "DayPicker-NavButton DayPicker-NavButton";
     const isRTL = this.props.dir === "rtl";
 
     const leftButton = isRTL ? this.allowNextMonth() : this.allowPreviousMonth();
     const rightButton = isRTL ? this.allowPreviousMonth() : this.allowNextMonth();
     return (
-      <div className="DayPicker-NavBar">
+      <div {...substyle(this.props, 'nav-bar')}>
         { leftButton &&
           <span
             key="left"
-            className={ `${baseClass}--prev` }
+            {...substyle(this.props, ['nav-button', 'nav-button-prev'])}
             onClick={ isRTL ? ::this.handleNextMonthClick : ::this.handlePrevMonthClick }
           />
         }
         { rightButton &&
           <span
             key="right"
-            className={ `${baseClass}--next` }
+            {...substyle(this.props, ['nav-button', 'nav-button-next'])}
             onClick={  isRTL ? ::this.handlePrevMonthClick : ::this.handleNextMonthClick }
           />
         }
@@ -341,24 +398,28 @@ export default class DayPicker extends Component {
   renderMonth(date, i) {
     const { locale, localeUtils, onCaptionClick, captionElement } = this.props;
 
+    const substyleProps = !captionElement.className && !captionElement.style ?
+      substyle(this.props, 'caption') : {}
+
     const caption = React.cloneElement(captionElement, {
+      ...substyleProps,
       date, localeUtils, locale,
       onClick: onCaptionClick ? e => this.handleCaptionClick(e, date) : null
     });
 
     return (
       <div
-        className="DayPicker-Month"
+        {...substyle(this.props, 'month')}
         key={ i }>
 
         { caption }
 
-        <div className="DayPicker-Weekdays">
-          <div className="DayPicker-WeekdaysRow">
+        <div {...substyle(this.props, 'weekdays')}>
+          <div {...substyle(this.props, 'weekdays-row')}>
             { this.renderWeekDays() }
           </div>
         </div>
-        <div className="DayPicker-Body">
+        <div {...substyle(this.props, 'body')}>
           { this.renderWeeksInMonth(date) }
         </div>
       </div>
@@ -370,7 +431,7 @@ export default class DayPicker extends Component {
     const days = [];
     for (let i = 0; i < 7; i++) {
       days.push(
-        <div key={ i } className="DayPicker-Weekday">
+        <div key={ i } {...substyle(this.props, 'weekday')}>
           <abbr title={ localeUtils.formatWeekdayLong(i, locale) }>
             { localeUtils.formatWeekdayShort(i, locale) }
           </abbr>
@@ -384,82 +445,35 @@ export default class DayPicker extends Component {
     const { locale, localeUtils } = this.props;
     const firstDayOfWeek = localeUtils.getFirstDayOfWeek(locale);
     return Helpers.getWeekArray(month, firstDayOfWeek).map((week, i) =>
-      <div key={ i } className="DayPicker-Week" role="row">
+      <div key={ i } {...substyle(this.props, 'week')} role="row">
         { week.map(day => this.renderDay(month, day)) }
       </div>
     );
   }
 
   renderDay(month, day) {
+    const props = {
+      ...substyle(this.props, 'day'),
 
-    const { enableOutsideDays, modifiers: modifierFunctions } = this.props;
+      enableOutsideDays: this.props.enableOutsideDays, 
+      modifiers: this.props.modifiers, 
+      tabIndex: this.props.tabIndex,
 
-    let className = "DayPicker-Day";
-    let modifiers = [];
-    const key = `${day.getFullYear()}${day.getMonth()}${day.getDate()}`;
+      onKeyDown: this.handleDayKeyDown.bind(this), 
+      onMouseEnter: this.handleDayMouseEnter.bind(this), 
+      onMouseLeave: this.handleDayMouseLeave.bind(this), 
+      onTouchTap: this.handleDayTouchTap.bind(this), 
+      onClick: this.handleDayClick.bind(this),
 
-    const isToday = DateUtils.isSameDay(day, new Date());
-    if (isToday) {
-      modifiers.push("today");
+      month, 
+      day
     }
-
-    const isOutside = day.getMonth() !== month.getMonth();
-    if (isOutside) {
-      modifiers.push("outside");
-    }
-
-    if (modifierFunctions) {
-      const customModifiers = Helpers.getModifiersForDay(day, modifierFunctions);
-      modifiers = [...modifiers, ...customModifiers];
-    }
-
-    className += modifiers.map(modifier => ` ${className}--${modifier}`).join("");
-
-    if (isOutside && !enableOutsideDays) {
-      return <div key={ `outside-${key}` } className={ className } />;
-    }
-
-    const { onDayMouseEnter, onDayMouseLeave, onDayTouchTap, onDayClick }
-      = this.props;
-    let tabIndex = null;
-    if ((onDayTouchTap || onDayClick) && !isOutside) {
-      tabIndex = -1;
-      // Focus on the first day of the month
-      if (day.getDate() === 1) {
-        tabIndex = this.props.tabIndex;
-      }
-    }
-    return (
-      <div key={ key } className={ className }
-        tabIndex={ tabIndex }
-        role="gridcell"
-        onKeyDown={
-          (e) => this.handleDayKeyDown(e, day, modifiers) }
-        onMouseEnter= { onDayMouseEnter ?
-          (e) => this.handleDayMouseEnter(e, day, modifiers) : null }
-        onMouseLeave= { onDayMouseLeave ?
-          (e) => this.handleDayMouseLeave(e, day, modifiers) : null }
-        onClick= { onDayClick ?
-          (e) => this.handleDayClick(e, day, modifiers) : null }
-        onTouchTap= { onDayTouchTap ?
-          (e) => this.handleDayTouchTap(e, day, modifiers) : null }
-        >
-        { this.props.renderDay(day) }
-      </div>
-    );
+    return <Day {...props}>{ this.props.renderDay(day) }</Day>
   }
 
   render() {
     const { numberOfMonths, locale, canChangeMonth, ...attributes } = this.props;
     const { currentMonth } = this.state;
-    let className = `DayPicker DayPicker--${locale}`;
-
-    if (!this.props.onDayClick && !this.props.onDayTouchTap) {
-      className = `${className} DayPicker--interactionDisabled`;
-    }
-    if (attributes.className) {
-      className = `${className} ${attributes.className}`;
-    }
 
     const months = [];
     let month;
@@ -468,12 +482,18 @@ export default class DayPicker extends Component {
       months.push(this.renderMonth(month, i));
     }
 
+    const substyleProps = substyle(this.props, { 
+      ['&'+locale]: true, 
+      '&interaction-disabled': !this.props.onDayClick && !this.props.onDayTouchTap }
+    )
+
     return (
-      <div className={ className }
+      <div 
         role="widget"
         tabIndex={ canChangeMonth && attributes.tabIndex }
         onKeyDown={ e => this.handleKeyDown(e) }
-        {...attributes}>
+        {...attributes}
+        {...substyleProps}>
         { canChangeMonth && this.renderNavBar() }
         { months }
       </div>

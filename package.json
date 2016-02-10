@@ -79,5 +79,8 @@
     "sinon-chai": "^2.8.0",
     "testdom": "^2.0.0",
     "webpack": "^1.12.4"
+  },
+  "dependencies": {
+    "substyle": "^1.0.2"
   }
 }
