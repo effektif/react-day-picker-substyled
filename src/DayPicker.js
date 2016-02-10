@@ -270,8 +270,6 @@ export default class DayPicker extends Component {
   // Event handlers
 
   handleKeyDown(e) {
-    e.persist();
-
     if (!this.props.canChangeMonth && this.props.onKeyDown) {
       this.props.onKeyDown(e);
       return;
@@ -292,7 +290,6 @@ export default class DayPicker extends Component {
   }
 
   handleDayKeyDown(e, day, modifiers) {
-    e.persist();
     switch (e.keyCode) {
     case keys.LEFT:
       e.preventDefault();
@@ -326,13 +323,7 @@ export default class DayPicker extends Component {
     this.showPreviousMonth();
   }
 
-  handleCaptionClick(e, currentMonth) {
-    e.persist();
-    this.props.onCaptionClick(e, currentMonth);
-  }
-
   handleDayTouchTap(e, day, modifiers) {
-    e.persist();
     if (modifiers.indexOf("outside") > -1) {
       this.handleOutsideDayPress(day);
     }
@@ -340,24 +331,12 @@ export default class DayPicker extends Component {
   }
 
   handleDayClick(e, day, modifiers) {
-    e.persist();
     if (modifiers.indexOf("outside") > -1) {
       this.handleOutsideDayPress(day);
     }
 
     this.props.onDayClick(e, day, modifiers);
   }
-
-  handleDayMouseEnter(e, day, modifiers) {
-    e.persist();
-    this.props.onDayMouseEnter(e, day, modifiers);
-  }
-
-  handleDayMouseLeave(e, day, modifiers) {
-    e.persist();
-    this.props.onDayMouseLeave(e, day, modifiers);
-  }
-
   handleOutsideDayPress(day) {
     const { currentMonth } = this.state;
     const { numberOfMonths } = this.props;
@@ -404,7 +383,7 @@ export default class DayPicker extends Component {
     const caption = React.cloneElement(captionElement, {
       ...substyleProps,
       date, localeUtils, locale,
-      onClick: onCaptionClick ? e => this.handleCaptionClick(e, date) : null
+      onClick: (e) => onCaptionClick(e, date)
     });
 
     return (
@@ -460,8 +439,8 @@ export default class DayPicker extends Component {
       tabIndex: this.props.tabIndex,
 
       onKeyDown: this.handleDayKeyDown.bind(this), 
-      onMouseEnter: this.handleDayMouseEnter.bind(this), 
-      onMouseLeave: this.handleDayMouseLeave.bind(this), 
+      onMouseEnter: this.props.onDayMouseEnter, 
+      onMouseLeave: this.props.onDayMouseEnter, 
       onTouchTap: this.handleDayTouchTap.bind(this), 
       onClick: this.handleDayClick.bind(this),
 
