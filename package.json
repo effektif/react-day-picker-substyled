@@ -1,9 +1,8 @@
 {
-  "name": "react-day-picker",
+  "name": "react-day-picker-substyled",
   "version": "1.2.0",
   "description": "Flexible date picker component for React",
   "main": "DayPicker.js",
-  "style": "lib/style.css",
   "directories": {
     "doc": "docs"
   },
@@ -26,7 +25,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gpbl/react-day-picker.git"
+    "url": "https://github.com/jfschwarz/react-day-picker-substyled.git"
   },
   "keywords": [
     "react",
@@ -41,11 +40,14 @@
     "momentjs"
   ],
   "author": "Giampaolo Bellavite <io@gpbl.org>",
+  "contributors": [
+    "Jan-Felix Schwarz <jan-felix.schwarz@signavio.com>"
+  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gpbl/react-day-picker/issues"
+    "url": "https://github.com/jschwarz/react-day-picker-substyled/issues"
   },
-  "homepage": "https://github.com/gpbl/react-day-picker",
+  "homepage": "https://github.com/jschwarz/react-day-picker-substyled",
   "peerDependencies": {
     "react": "~0.13.x || ~0.14.x"
   },
