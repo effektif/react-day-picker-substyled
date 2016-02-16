@@ -1,7 +1,7 @@
 import React from "react";
 import moment from "moment";
 
-import DayPicker, { DateUtils } from "react-day-picker";
+import DayPicker, { DateUtils } from "react-day-picker-substyled";
 
 
 export default class InputField extends React.Component {

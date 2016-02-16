@@ -1,7 +1,6 @@
 import React from "react";
-import DayPicker, { DateUtils } from "react-day-picker";
+import DayPicker, { DateUtils } from "react-day-picker-substyled";
 
-import "react-day-picker/lib/style.css";
 
 export default class DisabledDays extends React.Component {
 

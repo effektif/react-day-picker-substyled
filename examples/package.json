@@ -1,10 +1,10 @@
 {
-  "name": "react-day-picker-example",
+  "name": "react-day-picker-substyled-example",
   "version": "0.1.0",
-  "description": "Example app for react-day-picker",
+  "description": "Example app for react-day-picker-substyled",
   "main": "index.js",
   "scripts": {
-    "preinstall": "npm uninstall react-day-picker",
+    "preinstall": "npm uninstall react-day-picker-substyled",
     "postinstall": "npm install ../",
     "start": "node index",
     "lint": "eslint src",
@@ -12,12 +12,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gpbl/react-day-picker.git"
+    "url": "https://github.com/jfschwarz/react-day-picker-substyled.git"
   },
   "author": "Giampaolo Bellavite <io@gpbl.org>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gpbl/react-day-picker/issues"
+    "url": "https://github.com/jfschwarz/react-day-picker-substyled/issues"
   },
   "homepage": "http://www.gpbl.org/react-day-picker/",
   "dependencies": {
@@ -31,7 +31,7 @@
     "history": "^1.13.0",
     "raw-loader": "^0.5.1",
     "react": "^0.14",
-    "react-day-picker": "../",
+    "react-day-picker-substyled": "../",
     "react-dom": "^0.14",
     "react-tap-event-plugin": "^0.2.0",
     "style-loader": "^0.12.3",

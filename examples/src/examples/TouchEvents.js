@@ -1,5 +1,5 @@
 import React from "react";
-import DayPicker from "react-day-picker";
+import DayPicker from "react-day-picker-substyled";
 import reactTapEvent from "react-tap-event-plugin";
 
 // enable touch-tap events

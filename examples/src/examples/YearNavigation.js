@@ -1,5 +1,5 @@
 import React from "react";
-import DayPicker from "react-day-picker";
+import DayPicker from "react-day-picker-substyled";
 
 
 const currentYear = (new Date()).getFullYear();
@@ -20,16 +20,22 @@ function YearMonthForm({ date, localeUtils, onChange }) {
     onChange(new Date(year.value, month.value));
   }
 
+  const selectStyle = {
+    border: 0,
+    width: 'auto',
+    marginTop: '-.35rem'
+  }
+
   return (
-    <form className="DayPicker-Caption">
-      <select name="month" onChange={ handleChange } value={ date.getMonth() }>
+    <form>
+      <select name="month" onChange={ handleChange } value={ date.getMonth() } style={selectStyle}>
         { months.map((month, i) =>
           <option key={ i } value={ i }>
             { month }
           </option>)
         }
       </select>
-      <select name="year" onChange={ handleChange } value={ date.getFullYear() }>
+      <select name="year" onChange={ handleChange } value={ date.getFullYear() } style={selectStyle}>
         { years.map((year, i) =>
           <option key={ i } value={ year }>
             { year }
@@ -48,8 +54,8 @@ export default class YearNavigation extends React.Component {
 
   render() {
     return (
-      <div className="YearNavigation">
-        <DayPicker
+      <div>
+        <DayPicker className="dp"
           initialMonth={ this.state.initialMonth }
           fromMonth={ fromMonth }
           toMonth={ toMonth }

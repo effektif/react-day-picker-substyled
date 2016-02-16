@@ -1,5 +1,5 @@
 import React from "react";
-import DayPicker from "react-day-picker";
+import DayPicker from "react-day-picker-substyled";
 
 // Use a custom util to format the calendar values according to the
 // selected locale. This one is based on moment.js
