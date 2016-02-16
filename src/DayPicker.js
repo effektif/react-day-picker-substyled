@@ -12,9 +12,11 @@ const keys = {
   SPACE: 32
 };
 
-const Caption = ({ date, locale, localeUtils, ...rest }) => (
+const Caption = ({ date, locale, localeUtils, children, ...rest }) => (
   <div {...rest} {...substyle(rest)}>
-    { localeUtils.formatMonthTitle(date, locale) }
+    { children ? 
+      React.cloneElement(children, { date, locale, localeUtils }) :
+      localeUtils.formatMonthTitle(date, locale) }
   </div>
 );
 
@@ -130,7 +132,6 @@ export default class DayPicker extends Component {
     enableOutsideDays: false,
     canChangeMonth: true,
     renderDay: day => day.getDate(),
-    captionElement: <Caption />,
     style: defaultStyle,
 
     onDayClick: emptyFunc,
@@ -390,21 +391,16 @@ export default class DayPicker extends Component {
   renderMonth(date, i) {
     const { locale, localeUtils, onCaptionClick, captionElement } = this.props;
 
-    const substyleProps = !captionElement.className && !captionElement.style ?
-      substyle(this.props, 'caption') : {}
-
-    const caption = React.cloneElement(captionElement, {
-      ...substyleProps,
-      date, localeUtils, locale,
-      onClick: (e) => onCaptionClick(e, date)
-    });
-
     return (
       <div
-        {...substyle(this.props, 'month')}
+        {...substyle(this.props, 'month2')}
         key={ i }>
 
-        { caption }
+        <Caption {...substyle(this.props, 'caption')}
+          {...{date, localeUtils, locale}}
+          onClick={(e) => onCaptionClick(e, date)}>
+          {captionElement}
+        </Caption>
 
         <div {...substyle(this.props, 'weekdays')}>
           <div {...substyle(this.props, 'weekdays-row')}>
