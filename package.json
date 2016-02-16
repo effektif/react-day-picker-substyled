@@ -8,14 +8,14 @@
     "doc": "docs"
   },
   "scripts": {
-    "clean": "rimraf lib coverage dist",
+    "clean": "rimraf lib coverage",
     "lint": "eslint src test",
     "test": "mocha --compilers js:babel-core/register --recursive --reporter spec",
     "test:watch": "npm test -- --watch",
     "cover": "babel-node ./node_modules/istanbul/lib/cli cover -- _mocha --recursive --reporter spec",
     "check": "npm run lint && npm run test",
-    "prerelease": "npm run check && webpack",
-    "prepublish": "babel ./src -d ./lib --source-maps && postcss --use autoprefixer src/style.css -d lib/",
+    "build": "babel ./src -d ./lib --source-maps",
+    "prepublish": "npm run clean && npm run build",
     "examples:clean": "rimraf examples/built",
     "examples:build": "npm run examples:clean && cd examples && npm run build && cd ..",
     "docs:clean": "rimraf _book",
@@ -77,8 +77,7 @@
     "rimraf": "^2.4.3",
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0",
-    "testdom": "^2.0.0",
-    "webpack": "^1.12.4"
+    "testdom": "^2.0.0"
   },
   "dependencies": {
     "substyle": "^1.1.0"

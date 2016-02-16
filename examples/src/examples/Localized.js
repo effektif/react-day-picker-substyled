@@ -10,7 +10,6 @@ import "moment/locale/ja";
 import "moment/locale/ar";
 import "moment/locale/it";
 
-import "react-day-picker/lib/style.css";
 
 export default class Localized extends React.Component {
 
