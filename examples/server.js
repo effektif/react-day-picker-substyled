@@ -10,10 +10,10 @@ new WebpackDevServer(webpack(config), {
   stats: {
     colors: true
   }
-}).listen(3001, "0.0.0.0", (err) => {
+}).listen(3000, "0.0.0.0", (err) => {
   if (err) {
     console.error(err);
     return;
   }
-  console.log("Listening at 0.0.0.0:3001");
+  console.log("Listening at 0.0.0.0:3000");
 });
