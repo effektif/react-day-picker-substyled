@@ -1,6 +1,6 @@
 {
   "name": "react-day-picker-substyled",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "Flexible date picker component for React",
   "main": "DayPicker.js",
   "directories": {
