@@ -1,17 +1,13 @@
 import React from "react";
 import DayPicker, { DateUtils } from "react-day-picker-substyled";
 
-import defaultStyle from "react-day-picker/lib/defaultStyle";
-
 const selectedDayStyle = {
   color: '#FFF',
   backgroundColor: '#4A90E2',
 };
 
 const style = {
-  ...defaultStyle,
   day: {
-    ...defaultStyle.day,
     '&selected': selectedDayStyle
   },
 };

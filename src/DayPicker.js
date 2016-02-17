@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from "react";
 import substyle from 'substyle';
+import merge from 'lodash/merge';
 import * as Helpers from "./Helpers";
 import * as DateUtils from "./DateUtils";
 import * as LocaleUtils from "./LocaleUtils";
@@ -132,7 +133,6 @@ export default class DayPicker extends Component {
     enableOutsideDays: false,
     canChangeMonth: true,
     renderDay: day => day.getDate(),
-    style: defaultStyle,
 
     onDayClick: emptyFunc,
     onDayTouchTap: emptyFunc,
@@ -365,22 +365,23 @@ export default class DayPicker extends Component {
 
   renderNavBar() {
     const isRTL = this.props.dir === "rtl";
+    const substyleProps = this.getSubstyleProps()
 
     const leftButton = isRTL ? this.allowNextMonth() : this.allowPreviousMonth();
     const rightButton = isRTL ? this.allowPreviousMonth() : this.allowNextMonth();
     return (
-      <div {...substyle(this.props, 'nav-bar')}>
+      <div {...substyle(substyleProps, 'nav-bar')}>
         { leftButton &&
           <span
             key="left"
-            {...substyle(this.props, ['nav-button', 'nav-button-prev'])}
+            {...substyle(substyleProps, ['nav-button', 'nav-button-prev'])}
             onClick={ isRTL ? ::this.handleNextMonthClick : ::this.handlePrevMonthClick }
           />
         }
         { rightButton &&
           <span
             key="right"
-            {...substyle(this.props, ['nav-button', 'nav-button-next'])}
+            {...substyle(substyleProps, ['nav-button', 'nav-button-next'])}
             onClick={  isRTL ? ::this.handlePrevMonthClick : ::this.handleNextMonthClick }
           />
         }
@@ -390,24 +391,25 @@ export default class DayPicker extends Component {
 
   renderMonth(date, i) {
     const { locale, localeUtils, onCaptionClick, captionElement } = this.props;
+    const substyleProps = this.getSubstyleProps()
 
     return (
       <div
-        {...substyle(this.props, 'month2')}
+        {...substyle(substyleProps, 'month')}
         key={ i }>
 
-        <Caption {...substyle(this.props, 'caption')}
+        <Caption {...substyle(substyleProps, 'caption')}
           {...{date, localeUtils, locale}}
           onClick={(e) => onCaptionClick(e, date)}>
           {captionElement}
         </Caption>
 
-        <div {...substyle(this.props, 'weekdays')}>
-          <div {...substyle(this.props, 'weekdays-row')}>
+        <div {...substyle(substyleProps, 'weekdays')}>
+          <div {...substyle(substyleProps, 'weekdays-row')}>
             { this.renderWeekDays() }
           </div>
         </div>
-        <div {...substyle(this.props, 'body')}>
+        <div {...substyle(substyleProps, 'body')}>
           { this.renderWeeksInMonth(date) }
         </div>
       </div>
@@ -419,7 +421,7 @@ export default class DayPicker extends Component {
     const days = [];
     for (let i = 0; i < 7; i++) {
       days.push(
-        <div key={ i } {...substyle(this.props, 'weekday')}>
+        <div key={ i } {...substyle(this.getSubstyleProps(), 'weekday')}>
           <abbr title={ localeUtils.formatWeekdayLong(i, locale) }>
             { localeUtils.formatWeekdayShort(i, locale) }
           </abbr>
@@ -433,7 +435,7 @@ export default class DayPicker extends Component {
     const { locale, localeUtils } = this.props;
     const firstDayOfWeek = localeUtils.getFirstDayOfWeek(locale);
     return Helpers.getWeekArray(month, firstDayOfWeek).map((week, i) =>
-      <div key={ i } {...substyle(this.props, 'week')} role="row">
+      <div key={ i } {...substyle(this.getSubstyleProps(), 'week')} role="row">
         { week.map(day => this.renderDay(month, day)) }
       </div>
     );
@@ -457,7 +459,7 @@ export default class DayPicker extends Component {
     }
 
     const props = {
-      ...substyle(this.props, 'day'),
+      ...substyle(this.getSubstyleProps(), 'day'),
 
       enableOutsideDays: this.props.enableOutsideDays, 
       modifiers: this.props.modifiers, 
@@ -478,6 +480,13 @@ export default class DayPicker extends Component {
     return <Day {...props} ref={ref}>{ this.props.renderDay(day) }</Day>
   }
 
+  getSubstyleProps() {
+    return {
+      className: this.props.className,
+      style: merge({}, defaultStyle, this.props.style)
+    }
+  }
+
   render() {
     const { numberOfMonths, locale, canChangeMonth, ...attributes } = this.props;
     const { currentMonth } = this.state;
@@ -489,9 +498,12 @@ export default class DayPicker extends Component {
       months.push(this.renderMonth(month, i));
     }
 
-    const substyleProps = substyle(this.props, { 
-      ['&'+locale]: true, 
-      '&interaction-disabled': !this.props.onDayClick && !this.props.onDayTouchTap }
+    const styleAndClass = substyle(
+      this.getSubstyleProps(), 
+      { 
+        ['&'+locale]: true, 
+        '&interaction-disabled': !this.props.onDayClick && !this.props.onDayTouchTap 
+      }
     )
 
     return (
@@ -500,7 +512,7 @@ export default class DayPicker extends Component {
         tabIndex={ canChangeMonth && attributes.tabIndex }
         onKeyDown={ e => this.handleKeyDown(e) }
         {...attributes}
-        {...substyleProps}>
+        {...styleAndClass}>
         { canChangeMonth && this.renderNavBar() }
         { months }
       </div>
