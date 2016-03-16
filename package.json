@@ -80,7 +80,6 @@
     "testdom": "^2.0.0"
   },
   "dependencies": {
-    "lodash": "^4.5.0",
-    "substyle": "^1.1.0"
+    "substyle": "^2.0.1"
   }
 }
