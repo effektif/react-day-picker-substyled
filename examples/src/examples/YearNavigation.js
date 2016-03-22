@@ -23,7 +23,8 @@ function YearMonthForm({ date, localeUtils, onChange }) {
   const selectStyle = {
     border: 0,
     width: 'auto',
-    marginTop: '-.35rem'
+    marginTop: '-.35rem',
+    fontSize: '10pt'
   }
 
   return (

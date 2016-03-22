@@ -39,6 +39,8 @@ export default {
     display: 'table-caption',
     textAlign: 'center',
     height: '1.5rem',
+    marginLeft: '1.5rem',
+    marginRight: '1.5rem'
   },
 
   weekdays: {
