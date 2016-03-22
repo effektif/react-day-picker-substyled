@@ -4,11 +4,22 @@ import DayPicker, { DateUtils } from "react-day-picker-substyled";
 const selectedDayStyle = {
   color: '#FFF',
   backgroundColor: '#4A90E2',
+  ':hover': {
+    backgroundColor: '#4A90E2'
+  }
 };
 
 const style = {
   day: {
-    '&selected': selectedDayStyle
+    '&selected': selectedDayStyle,
+
+    ':focus': {
+      zIndex: 1
+    },
+
+    ':hover': {
+      backgroundColor: '#f2f2f2'
+    }
   },
 };
 

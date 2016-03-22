@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from "react";
+import Radium from 'radium';
 import { defaultStyle } from 'substyle';
 import * as Helpers from "./Helpers";
 import * as DateUtils from "./DateUtils";
@@ -14,13 +15,14 @@ const keys = {
 
 const substyle = defaultStyle(defaultStyleDefs);
 
-const Caption = ({ date, locale, localeUtils, children, ...rest }) => (
+const Caption = Radium(({ date, locale, localeUtils, children, ...rest }) => (
   <div {...rest} {...substyle(rest)}>
     { children ? 
       React.cloneElement(children, { date, locale, localeUtils }) :
       localeUtils.formatMonthTitle(date, locale) }
   </div>
-);
+));
+
 
 class Day extends Component {
 
@@ -88,9 +90,12 @@ class Day extends Component {
   }
 }
 
+Day = Radium(Day)
+
 const emptyFunc = () => {}
 
-export default class DayPicker extends Component {
+
+class DayPicker extends Component {
 
   static propTypes = {
 
@@ -517,3 +522,5 @@ export default class DayPicker extends Component {
 
 
 }
+
+export default Radium(DayPicker)

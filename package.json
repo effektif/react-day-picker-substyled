@@ -80,6 +80,7 @@
     "testdom": "^2.0.0"
   },
   "dependencies": {
+    "radium": "^0.16.6",
     "substyle": "^2.0.1"
   }
 }
