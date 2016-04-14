@@ -5,6 +5,7 @@ import sinon from "sinon";
 import sinonChai from "sinon-chai";
 
 chai.use(sinonChai);
+require("react-tap-event-plugin")();
 
 testDom("<html><body></body></html>");
 const React = require("react");
@@ -24,7 +25,7 @@ const keys = {
 };
 
 describe("DayPicker", () => {
-  
+
   it("has the default props properly set", () => {
     const dayPicker = <DayPicker />;
     const now = new Date();
@@ -97,6 +98,7 @@ describe("DayPicker", () => {
 
     const dayPicker = shallowRenderer.getRenderOutput();
     expect(dayPicker.props.className).to.contain("custom-class");
+    expect(dayPicker.props.className).to.contain("DayPicker");
   });
 
   // RENDERING
@@ -615,7 +617,7 @@ describe("DayPicker", () => {
 
   it("calls event handlers on a day cell", () => {
 
-    require("react-tap-event-plugin")();
+
 
     function isFirstDay(d) {
       return d.getFullYear() === 2015 &&
@@ -674,7 +676,7 @@ describe("DayPicker", () => {
 
   it("calls touch-tap event handler on a day cell", () => {
 
-    require("react-tap-event-plugin")();
+
 
     const handleTouchTap = sinon.spy();
 
@@ -711,7 +713,7 @@ describe("DayPicker", () => {
 
   it("does not call mouse events on disabled outside days", () => {
 
-    require("react-tap-event-plugin")();
+
 
     const handleClick = sinon.spy();
     const handleMouseEnter = sinon.spy();
@@ -747,7 +749,7 @@ describe("DayPicker", () => {
 
   it("changes the month when tapping on enabled outside days", () => {
 
-    require("react-tap-event-plugin")();
+
 
     const handleTouchTap = sinon.spy();
 
@@ -769,7 +771,7 @@ describe("DayPicker", () => {
   });
 
   it("shows the previous month when clicking on (enabled) outside days", () => {
-    require("react-tap-event-plugin")();
+
     const dayPickerEl = TestUtils.renderIntoDocument(
       <DayPicker
         numberOfMonths={1}
@@ -829,7 +831,7 @@ describe("DayPicker", () => {
 
   it("does not show the next month when clicking on an outside days of the first of 2 months", () => {
 
-    require("react-tap-event-plugin")();
+
 
     const handleClick = sinon.spy();
 
@@ -923,7 +925,7 @@ describe("DayPicker", () => {
       const dayPicker = TestUtils.renderIntoDocument(<DayPicker onKeyDown={spy} />);
       const node = ReactDOM.findDOMNode(dayPicker);
       TestUtils.Simulate.keyDown(node);
-      expect(spy.calledOnce).to.be.true;
+      expect(spy).to.be.calledOnce;
     });
 
     it("should handle keydown event when cannot change month", () => {
@@ -933,7 +935,7 @@ describe("DayPicker", () => {
       );
       const node = ReactDOM.findDOMNode(dayPicker);
       TestUtils.Simulate.keyDown(node);
-      expect(spy.calledOnce).to.be.true;
+      expect(spy).to.be.calledOnce;
     });
 
   });
