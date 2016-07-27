@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from "react";
 import Radium from 'radium';
-import { defaultStyle } from 'substyle';
+import substyle from 'substyle';
 import * as Helpers from "./Helpers";
 import * as DateUtils from "./DateUtils";
 import * as LocaleUtils from "./LocaleUtils";
@@ -13,7 +13,7 @@ const keys = {
   SPACE: 32
 };
 
-const substyle = defaultStyle(defaultStyleDefs);
+substyle = substyle(defaultStyleDefs)
 
 const Caption = Radium(({ date, locale, localeUtils, children, ...rest }) => (
   <div {...rest} {...substyle(rest)}>
