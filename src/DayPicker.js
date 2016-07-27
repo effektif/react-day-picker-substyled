@@ -13,7 +13,7 @@ const keys = {
   SPACE: 32
 };
 
-const substyle = defaultStyle(defaultStyleDefs)
+const substyle = defaultStyle({ style: defaultStyleDefs })
 
 const Caption = Radium(({ date, locale, localeUtils, children, ...rest }) => (
   <div {...rest} {...substyle(rest)}>
