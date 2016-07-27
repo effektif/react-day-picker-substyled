@@ -1,10 +1,10 @@
 import React, { Component, PropTypes } from "react";
-import Radium from 'radium';
-import substyle from 'substyle';
+import Radium from "radium";
+import substyle from "substyle";
 import * as Helpers from "./Helpers";
 import * as DateUtils from "./DateUtils";
 import * as LocaleUtils from "./LocaleUtils";
-import defaultStyleDefs from './defaultStyle';
+import defaultStyleDefs from "./defaultStyle";
 
 const keys = {
   LEFT: 37,
@@ -40,17 +40,17 @@ class Day extends Component {
     const isOutside = day.getMonth() !== month.getMonth();
 
     const modifierObj = {
-      'today': isToday,
-      'outside': isOutside,
+      "today": isToday,
+      "outside": isOutside,
 
       ...Helpers.mapObject(modifiers, checkFn => checkFn(day, { isToday, isOutside }))
     }
 
     const substyleProps = substyle(rest, {
-      '&today': isToday,
-      '&outside': isOutside,
+      "&today": isToday,
+      "&outside": isOutside,
 
-      ...Helpers.mapObject(modifierObj, undefined, modifierKey => '&' + modifierKey)
+      ...Helpers.mapObject(modifierObj, undefined, modifierKey => "&" + modifierKey)
     })
 
     if (isOutside && !enableOutsideDays) {
@@ -380,18 +380,18 @@ class DayPicker extends Component {
     const leftButton = isRTL ? this.allowNextMonth() : this.allowPreviousMonth();
     const rightButton = isRTL ? this.allowPreviousMonth() : this.allowNextMonth();
     return (
-      <div {...substyle({ className, style }, 'nav-bar')}>
+      <div {...substyle({ className, style }, "nav-bar")}>
         { leftButton &&
           <span
             key="left"
-            {...substyle({ className, style }, ['nav-button', 'nav-button-prev'])}
+            {...substyle({ className, style }, ["nav-button", "nav-button-prev"])}
             onClick={ isRTL ? ::this.handleNextMonthClick : ::this.handlePrevMonthClick }
           />
         }
         { rightButton &&
           <span
             key="right"
-            {...substyle({ className, style }, ['nav-button', 'nav-button-next'])}
+            {...substyle({ className, style }, ["nav-button", "nav-button-next"])}
             onClick={  isRTL ? ::this.handlePrevMonthClick : ::this.handleNextMonthClick }
           />
         }
@@ -405,21 +405,21 @@ class DayPicker extends Component {
 
     return (
       <div
-        {...substyle({ className, style }, 'month')}
+        {...substyle({ className, style }, "month")}
         key={ i }>
 
-        <Caption {...substyle({ className, style }, 'caption')}
+        <Caption {...substyle({ className, style }, "caption")}
           {...{date, localeUtils, locale}}
           onClick={(e) => onCaptionClick(e, date)}>
           {captionElement}
         </Caption>
 
-        <div {...substyle({ className, style }, 'weekdays')}>
-          <div {...substyle({ className, style }, 'weekdays-row')}>
+        <div {...substyle({ className, style }, "weekdays")}>
+          <div {...substyle({ className, style }, "weekdays-row")}>
             { this.renderWeekDays() }
           </div>
         </div>
-        <div {...substyle({ className, style }, 'body')}>
+        <div {...substyle({ className, style }, "body")}>
           { this.renderWeeksInMonth(date) }
         </div>
       </div>
@@ -431,7 +431,7 @@ class DayPicker extends Component {
     const days = [];
     for (let i = 0; i < 7; i++) {
       days.push(
-        <div key={ i } {...substyle({ className, style }, 'weekday')}>
+        <div key={ i } {...substyle({ className, style }, "weekday")}>
           <abbr title={ localeUtils.formatWeekdayLong(i, locale) }>
             { localeUtils.formatWeekdayShort(i, locale) }
           </abbr>
@@ -445,7 +445,7 @@ class DayPicker extends Component {
     const { locale, localeUtils, className, style } = this.props;
     const firstDayOfWeek = localeUtils.getFirstDayOfWeek(locale);
     return Helpers.getWeekArray(month, firstDayOfWeek).map((week, i) =>
-      <div key={ i } {...substyle({ className, style }, 'week')} role="row">
+      <div key={ i } {...substyle({ className, style }, "week")} role="row">
         { week.map(day => this.renderDay(month, day)) }
       </div>
     );
@@ -471,7 +471,7 @@ class DayPicker extends Component {
     }
 
     const props = {
-      ...substyle({ className, style }, 'day'),
+      ...substyle({ className, style }, "day"),
 
       enableOutsideDays: this.props.enableOutsideDays, 
       modifiers: this.props.modifiers, 
@@ -506,8 +506,8 @@ class DayPicker extends Component {
     const styleAndClass = substyle(
       { className, style }, 
       { 
-        ['&'+locale]: true, 
-        '&interaction-disabled': !this.props.onDayClick && !this.props.onDayTouchTap 
+        ["&"+locale]: true, 
+        "&interaction-disabled": !this.props.onDayClick && !this.props.onDayTouchTap 
       }
     )
 
