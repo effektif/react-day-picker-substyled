@@ -13,7 +13,11 @@ const keys = {
   SPACE: 32
 };
 
-const substyle = defaultStyle({ style: defaultStyleDefs })
+const realSubstyle = defaultStyle({ style: defaultStyleDefs })
+// workaround for babel bug: break up substyle chaining and turn the result into a plain object
+const substyle = (...args) => ({
+  ...realSubstyle(...args)
+})
 
 const Caption = Radium(({ date, locale, localeUtils, children, ...rest }) => (
   <div {...rest} {...substyle(rest)}>
@@ -34,8 +38,6 @@ class Day extends Component {
       ...rest 
     } = this.props;
 
-    const key = `${day.getFullYear()}${day.getMonth()}${day.getDate()}`;
-
     const isToday = DateUtils.isSameDay(day, new Date());
     const isOutside = day.getMonth() !== month.getMonth();
 
@@ -46,7 +48,7 @@ class Day extends Component {
       ...Helpers.mapObject(modifiers, checkFn => checkFn(day, { isToday, isOutside }))
     }
 
-    const substyleProps = substyle(rest, {
+    const styleProps = substyle(rest, {
       "&today": isToday,
       "&outside": isOutside,
 
@@ -54,7 +56,7 @@ class Day extends Component {
     })
 
     if (isOutside && !enableOutsideDays) {
-      return <div key={ `outside-${key}` } {...substyleProps} />;
+      return <div {...styleProps} />;
     }
 
     let tabIndex = this.props.tabIndex
@@ -73,9 +75,9 @@ class Day extends Component {
     );
 
     return (
-      <div key={key}
+      <div
         ref="el"
-        {...substyleProps}
+        {...styleProps}
         tabIndex={ tabIndex }
         role="gridcell"
         {...handlers}
@@ -145,7 +147,7 @@ class DayPicker extends Component {
     onDayMouseEnter: emptyFunc,
     onDayMouseLeave: emptyFunc,
     onMonthChange: emptyFunc,
-    onCaptionClick: emptyFunc,
+    onCaptionClick: emptyFunc
   };
 
   constructor(props) {
@@ -454,7 +456,7 @@ class DayPicker extends Component {
   renderDay(month, day) {
     const { className, style } = this.props
 
-    var ref;
+    let ref;
     if(this.state.focusedDay) {
       const isOutside = day.getMonth() !== month.getMonth();
       if(!isOutside) {
@@ -489,7 +491,11 @@ class DayPicker extends Component {
       day
     }
 
-    return <Day {...props} ref={ref}>{ this.props.renderDay(day) }</Day>
+    const key = `${day.getFullYear()}${day.getMonth()}${day.getDate()}`
+
+    return <Day {...props} ref={ref} key={key}>
+      { this.props.renderDay(day) }
+    </Day>
   }
 
   render() {
@@ -503,7 +509,7 @@ class DayPicker extends Component {
       months.push(this.renderMonth(month, i));
     }
 
-    const styleAndClass = substyle(
+    const styleProps = substyle(
       { className, style }, 
       { 
         ["&"+locale]: true, 
@@ -514,7 +520,7 @@ class DayPicker extends Component {
     return (
       <div
         {...attributes}
-        {...styleAndClass}
+        {...styleProps}
         role="widget"
         tabIndex={ canChangeMonth && attributes.tabIndex }
         onKeyDown={ e => this.handleKeyDown(e) }>
