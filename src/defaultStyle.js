@@ -1,7 +1,7 @@
 export default {
   userSelect: 'none',
   position: 'relative',
-  
+
   month:  {
     display: 'table',
     userSelect: 'none',
@@ -70,7 +70,10 @@ export default {
   day: {
     display: 'table-cell',
     padding: '.5rem',
-    border: '1px solid #eaecec',
+    borderTop: '1px solid #eaecec',
+    borderRight: '1px solid #eaecec',
+    borderLeft: '1px solid #eaecec',
+    borderBottom: '1px solid #eaecec',
     textAlign: 'center',
     cursor: 'pointer',
     verticalAlign: 'middle',
@@ -100,6 +103,3 @@ export default {
   },
 
 }
-
-
-  
